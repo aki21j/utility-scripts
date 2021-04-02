@@ -1,10 +1,17 @@
+"""
+	Split a huge csv into multiple files.
+	input reqd: 
+		- infile_path: file to read from
+		- out_dir: directory for output files 
+"""
+
 import pandas as pd 
 import sys
 import os
 
-out_dir = './split-files/'
-
 infile_path = sys.argv[1]
+out_dir = sys.argv[2]
+
 
 file_base_path = os.path.basename(infile_path)
 file_name = os.path.splitext(file_base_path)[0]

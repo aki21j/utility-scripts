@@ -1,10 +1,15 @@
+"""
+	Convert a json file to csv.
+	input reqd: 
+		- infile_path: file to read from
+		- out_dir: directory for output files 
+"""
+
 import sys
 import pandas as pd
 import os
 
-out_dir = './json-to-csv-out/'
-
-def main(infile_path):
+def main(infile_path, out_dir):
 
 	file_base_path = os.path.basename(infile_path)
 	file_name = os.path.splitext(file_base_path)[0]
@@ -19,5 +24,6 @@ def main(infile_path):
 
 if __name__ == '__main__':
 	infile_path = sys.argv[1]
+	out_dir = sys.argv[2]
 	main(infile_path)
 

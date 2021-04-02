@@ -1,3 +1,14 @@
+"""
+	Lookup state, city and country from zipcodes.
+	Always appends to a file, so that same can be used to reduce computations in the future.
+	input reqd: 
+		- infile_path: file to read from where zipcodes are present
+		- column_name: name of the column for zipcode
+		- country_code: country code of the list of zipcodes. e.g: IN for india
+		- zipcode_data_file: file path wherein output is to be written to. 
+												For successive runs, this file will be used to compute data that has already been resolved earlier.
+"""
+
 import sys
 import json
 import requests
@@ -6,7 +17,6 @@ import copy
 import os
 import traceback
 import csv
-from pprint import pprint
 
 FORMAT = '%(asctime)-15s %(message)s'
 logging.basicConfig(format=FORMAT)
@@ -16,12 +26,12 @@ logger.setLevel(logging.INFO)
 API_URL = "https://api.worldpostallocations.com/pincode?postalcode={}&countrycode={}"
 
 
-zipcode_data_file = "./parsed_address.json"
 
 def main():
 	infile_path = sys.argv[1]
 	column_name = sys.argv[2]
 	country_code = sys.argv[3]
+	zipcode_data_file = sys.argv[4]
 
 	out_data = []
 
@@ -44,7 +54,7 @@ def main():
 	logger.info("Total Length: {}".format(len((out_data))))
 	logger.info("Distinct length: {}".format(len(set(out_data))))
 
-	processed_data = get_processed_keys()
+	processed_data = get_processed_keys(zipcode_data_file)
 
 	distinct = set(out_data) ^ set(processed_data)
 
@@ -52,14 +62,14 @@ def main():
 	
 	return
 
-def get_processed_keys():
+def get_processed_keys(zipcode_data_file):
 	if os.path.exists(zipcode_data_file):
 		with open(zipcode_data_file, 'r') as infile:  
 			res = json.load(infile)
 			return res.keys()
 	return []
 
-def rev_lookup_address(zipcode_list, country_code):
+def rev_lookup_address(zipcode_list, country_code, zipcode_data_file):
 
 	counter = 0
 
