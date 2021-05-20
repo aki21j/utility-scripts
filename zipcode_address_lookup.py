@@ -17,6 +17,7 @@ import copy
 import os
 import traceback
 import csv
+from pprint import pprint
 
 FORMAT = '%(asctime)-15s %(message)s'
 logging.basicConfig(format=FORMAT)
@@ -58,7 +59,7 @@ def main():
 
 	distinct = set(out_data) ^ set(processed_data)
 
-	rev_lookup_address(list(distinct), country_code)
+	rev_lookup_address(list(distinct), country_code, zipcode_data_file)
 	
 	return
 
