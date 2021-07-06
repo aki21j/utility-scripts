@@ -26,7 +26,7 @@ logger.setLevel(logging.INFO)
 
 API_URL = "https://api.worldpostallocations.com/pincode?postalcode={}&countrycode={}"
 
-
+ERROR_FILE_PATH = "./no_data.json"
 
 def main():
 	infile_path = sys.argv[1]
@@ -76,6 +76,8 @@ def rev_lookup_address(zipcode_list, country_code, zipcode_data_file):
 
 	out_data = {}
 
+	no_data = []
+
 	if os.path.exists(zipcode_data_file):
 		with open(zipcode_data_file, 'r') as infile:  
 			out_data = json.load(infile)
@@ -98,8 +100,12 @@ def rev_lookup_address(zipcode_list, country_code, zipcode_data_file):
 				json.dump(out_data, outfile, indent = 2)
 				
 		except Exception as e:
+			no_data.append(zipcode)
 			logger.error(e)
 			logger.error(traceback.format_exc())
+
+	with open(ERROR_FILE_PATH, 'w') as outfile:
+		json.dump(no_data, outfile, indent = 2)
 
 
 def parse_address(raw_address):
